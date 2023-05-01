@@ -6,6 +6,7 @@ import { MakeScreenshotParams } from "./types";
 export async function makeScreenshot(
   page: Page,
   {
+    scale = 2,
     screenshot,
     beforeScreenshot,
     waitUntil = "networkidle0",
@@ -30,7 +31,11 @@ export async function makeScreenshot(
     const template = compile(screenshot.html);
     screenshot.setHTML(template(screenshot.content));
   }
-
+await page.setViewport({
+  width: 480,
+  height: 480,
+  deviceScaleFactor: scale || 2
+});
   await page.setContent(screenshot.html, { waitUntil });
   const element = await page.$(screenshot.selector);
   if (!element) {
